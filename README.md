@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/logo.png" width="220" alt="TLB - IEDs">
+</p>
+
 # TLB - IEDs
 
 An Arma 3 addon that adds TLB-branded copies of the eight vanilla and ACE IED
