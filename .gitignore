@@ -1,0 +1,13 @@
+# Build output
+dist/
+
+# Signing keys. The .biprivatekey MUST never be published - anyone holding it can
+# sign a PBO that your server will accept as genuine TLB content.
+private/
+*.biprivatekey
+
+# Arma / tooling noise
+*.pbo
+*.bisign
+*.log
+temp/
