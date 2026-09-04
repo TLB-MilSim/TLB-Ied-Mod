@@ -1,0 +1,58 @@
+[h1]TLB - IEDs[/h1]
+
+TLB copies of the eight vanilla and ACE IED types. Each one leaves a [b]persistent crater[/b] where it detonates — without launching or trapping the vehicle that set it off.
+
+[hr][/hr]
+
+[h2]Requirements[/h2]
+[list]
+[*][b]CBA_A3[/b]
+[*][b]ACE3[/b] — built and tested against 3.21.2
+[*]Arma 3 v2.10 or newer
+[/list]
+
+[h2]What it adds[/h2]
+Eight placeable IEDs and eight matching Zeus modules. In the Eden editor they are under [b]Empty → Explosives → TLB IEDs[/b].
+
+[list]
+[*]TLB IED (Large, Dug-in) — and a Pressure Plate variant
+[*]TLB IED (Large, Urban) — and a Pressure Plate variant
+[*]TLB IED (Small, Dug-in) — and a Pressure Plate variant
+[*]TLB IED (Small, Urban) — and a Pressure Plate variant
+[/list]
+
+Defusing, pressure plates, cellphone, clacker and dead man switch all behave exactly as they do on the stock ACE IEDs. Only the crater is new. Defusing an IED leaves no crater — only a real detonation does, so EOD work never scars the ground.
+
+[b]Your existing missions are unaffected.[/b] Craters are not added to the vanilla or ACE IEDs. Mission makers opt in by placing the TLB versions.
+
+[h2]Why the crater does not launch your vehicle[/h2]
+An Arma crater is a solid 3D object. Spawning one inside the hull of the vehicle that just drove over it is deep mesh penetration, and the physics engine resolves that the only way it knows how — by firing the vehicle into the sky.
+
+So nothing is standing there when it appears. Anything inside the crater's footprint is lifted clear first, and the crater forms underneath it. The vehicle then simply drops onto the finished crater and drives out normally.
+
+Crew are never pulled out of their seats, and it works the same in multiplayer regardless of who owns the vehicle.
+
+[h2]Settings[/h2]
+Everything is under [b]TLB - IEDs[/b] in the CBA settings menu, and is server-forced.
+
+[list]
+[*][b]Crater per IED type[/b] — every one of the eight types has its own setting: None, Small, Medium, Large, Extra Large, or Random. A dug-in large IED and an urban one can leave completely different holes.
+[*][b]Random[/b] — a different crater size on every detonation.
+[*][b]Lift height[/b] and [b]Lift hold[/b] — tune the anti-stuck lift if a vehicle ever catches a crater lip.
+[*][b]Lift infantry too[/b] — whether troops on foot are lifted as well as vehicles.
+[*][b]Max craters[/b] — optional cap for very long operations. Craters are permanent by default.
+[/list]
+
+[h2]Dedicated servers[/h2]
+The mod is signed. Copy [b]TLBIEDs01.bikey[/b] into your server's [i]keys[/i] folder.
+
+[h2]Source and issues[/h2]
+Full source, documentation and downloads:
+[url=https://github.com/TLB-MilSim/TLB-Ied-Mod]github.com/TLB-MilSim/TLB-Ied-Mod[/url]
+
+Bug reports and suggestions are welcome on the GitHub issue tracker.
+
+[h2]Credits[/h2]
+Built for [b]TLB MilSim[/b].
+
+Detonation hook pattern adapted from [url=https://github.com/acemod/ACE3]ACE3[/url].
