@@ -294,6 +294,19 @@ mod.cpp                   launcher metadata
 6. Repeat on a dedicated server with two clients, to confirm the crater appears
    for both and that the lift applies on whichever machine owns the vehicle.
 
+## About TLB MilSim
+
+We are a MilSim unit, and this mod was built mainly for our own operations. We
+are sharing it with the rest of the community in case it is useful to anyone
+else, and because we would like to hear suggestions and ideas for improvements.
+
+If you have one, or you hit a problem, come and tell us:
+
+**[discord.gg/TLBMilSim](https://discord.gg/TLBMilSim)**
+
+Bug reports and feature requests are equally welcome on the
+[issue tracker](https://github.com/TLB-MilSim/TLB-Ied-Mod/issues).
+
 ## Credits
 
 Built for **TLB MilSim**.
