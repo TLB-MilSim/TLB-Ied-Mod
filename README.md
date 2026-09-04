@@ -11,6 +11,11 @@ launching or trapping the vehicle that set it off.
 Requires **CBA_A3** and **ACE3** (`ace_explosives`). Built and tested against
 ACE 3.21.2, Arma 3 v2.10+.
 
+<p align="center">
+  <img src="docs/screenshots/01-mrap-in-crater.jpg" width="900"
+       alt="An MRAP resting on the crater left by the IED it just triggered">
+</p>
+
 ---
 
 ## What it does
@@ -23,6 +28,35 @@ route that has been hit *looks* like it has been hit for the rest of the mission
 The hard part isn't spawning the crater. It's spawning a solid 3D object inside
 the hull of the vehicle that just drove over it, without the physics engine
 firing that vehicle into the sky. See [The anti-stuck problem](#3-the-anti-stuck-problem).
+
+## Demo
+
+[![Watch the demo on YouTube](https://img.youtube.com/vi/1AH5ukcfTso/maxresdefault.jpg)](https://youtu.be/1AH5ukcfTso)
+
+## Screenshots
+
+<table>
+  <tr>
+    <td width="50%">
+      <img src="docs/screenshots/02-mrap-drove-out.jpg" alt="The same MRAP clear of the crater, still driveable">
+      <br><em>Lands on the crater, not inside it — and drives out.</em>
+    </td>
+    <td width="50%">
+      <img src="docs/screenshots/03-crater-front.jpg" alt="A crater left on open ground">
+      <br><em>The crater is permanent: the route stays scarred.</em>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <img src="docs/screenshots/04-crater-rim.jpg" alt="Close view over a crater rim">
+      <br><em>Each crater is randomly rotated, so repeat hits never look cloned.</em>
+    </td>
+    <td width="50%">
+      <img src="docs/screenshots/05-crater-open-ground.jpg" alt="A smaller crater on open ground">
+      <br><em>Crater size is a per-IED setting — see <a href="#crater-selection">Crater selection</a>.</em>
+    </td>
+  </tr>
+</table>
 
 ## Installation
 
@@ -201,8 +235,8 @@ Those map to the four stages, which makes a failure easy to localise:
 |---|---|
 | *nothing* | The PBO prefix is wrong — look for `Script \tlb\ieds\XEH_preInit.sqf not found`. |
 | `preInit complete` | Functions loaded, but the ammo `init` handler never fired. |
-| `armed` | The mine was hooked, but `Explode` never fired — it was defused, not detonated. |
-| `lifted` | Crater creation failed; check the classname in `CfgAmmo.hpp`. |
+| `armed` | The mine was hooked, but `Explode` never fired — it was defused, not detonated. Or this IED type's crater setting is **None**. |
+| `lifted` | Crater creation failed; check the classname in `TLB_IEDs_craterTypes` (`XEH_preInit.sqf`). |
 
 ## Building from source
 
