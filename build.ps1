@@ -8,7 +8,8 @@
 #>
 param(
     [string] $KeyName = "TLBIEDs01",
-    [switch] $Deploy
+    [switch] $Deploy,
+    [switch] $Package
 )
 
 $ErrorActionPreference = "Stop"
@@ -113,4 +114,34 @@ Write-Host ""
 Write-Host "Built $ModName" -ForegroundColor Green
 Get-ChildItem $Dist -Recurse -File | ForEach-Object {
     "  {0,-45} {1,8:N0} bytes" -f $_.FullName.Substring($Dist.Length + 1), $_.Length
+}
+
+# --- package -------------------------------------------------------------
+if ($Package) {
+    # Version comes from CfgPatches so the zip name cannot drift from the addon.
+    $CfgText = Get-Content (Join-Path $Source "config.cpp") -Raw
+    $Version = if ($CfgText -match 'version\s*=\s*"([^"]+)"') { $Matches[1] } else { "dev" }
+
+    $ZipPath = Join-Path $Root ("dist\TLB-IEDs-v{0}.zip" -f $Version)
+    if (Test-Path $ZipPath) { Remove-Item $ZipPath -Force }
+
+    # Built entry by entry rather than with Compress-Archive, which writes
+    # Windows "\" separators into the archive. Extracting one of those on a
+    # Linux server produces a single file literally named
+    # "@TLB - IEDs\addons\tlb_ieds.pbo" instead of a directory tree.
+    Add-Type -AssemblyName System.IO.Compression.FileSystem
+    $Archive = [System.IO.Compression.ZipFile]::Open($ZipPath, 'Create')
+    try {
+        $Prefix = (Split-Path $Dist -Parent).Length + 1
+        foreach ($f in (Get-ChildItem $Dist -Recurse -File)) {
+            # char 92 = backslash, 47 = forward slash - avoids escaping entirely
+            $Entry = $f.FullName.Substring($Prefix).Replace([char]92, [char]47)
+            [void][System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($Archive, $f.FullName, $Entry)
+        }
+    } finally {
+        $Archive.Dispose()
+    }
+
+    Write-Host ""
+    Write-Host ("Packaged {0} ({1:N0} bytes)" -f (Split-Path $ZipPath -Leaf), (Get-Item $ZipPath).Length) -ForegroundColor Green
 }

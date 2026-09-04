@@ -6,7 +6,7 @@ class CfgPatches {
     class TLB_IEDs {
         name = "TLB - IEDs";
         author = "TLB";
-        version = "1.0.0";
+        version = "1.1.0";
         requiredVersion = 2.10;
         requiredAddons[] = {"A3_Weapons_F", "A3_Modules_F_Curator", "cba_main", "ace_explosives"};
         weapons[] = {};
