@@ -6,13 +6,12 @@
  * Arguments:
  * 0: Crater classname <STRING>
  * 1: Detonation position ASL <ARRAY>
- * 2: Search radius for entities to protect <NUMBER>
  *
  * Return Value:
  * The crater <OBJECT>
  */
 
-params ["_craterType", "_posASL", ["_searchRadius", 12]];
+params ["_craterType", "_posASL"];
 
 private _posAGL = ASLToAGL _posASL;
 private _px = _posAGL select 0;

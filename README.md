@@ -30,7 +30,7 @@ verifies.
 
 ## Classes
 
-| Display name | Mine class | Zeus module | Crater |
+| Display name | Mine class | Zeus module | Default crater |
 |---|---|---|---|
 | TLB IED (Large, Dug-in) | `TLB_IEDLandBig` | `TLB_ModuleExplosive_IEDLandBig` | Large |
 | TLB IED (Large, Dug-in, Pressure Plate) | `TLB_IEDLandBig_Range` | `TLB_ModuleExplosive_IEDLandBig_Range` | Large |
@@ -41,8 +41,9 @@ verifies.
 | TLB IED (Small, Urban) | `TLB_IEDUrbanSmall` | `TLB_ModuleExplosive_IEDUrbanSmall` | Medium |
 | TLB IED (Small, Urban, Pressure Plate) | `TLB_IEDUrbanSmall_Range` | `TLB_ModuleExplosive_IEDUrbanSmall_Range` | Medium |
 
-- **Large** = `Land_ShellCrater_02_large_F`
-- **Medium** = `Land_ShellCrater_02_small_F`
+Those are only the **defaults** — every IED type has its own CBA setting, so you
+can give each one any crater size, turn its crater off, or set it to Random. See
+[Crater selection](#crater-selection).
 
 In Eden they sit under **Empty → Explosives → TLB IEDs**. In Zeus, place them
 through the modules in the right-hand column.
@@ -62,13 +63,17 @@ The hook lives on the **ammo**, not on the mine object:
 
 ```cpp
 class TLB_IEDLandBig_Remote_Ammo: IEDLandBig_Remote_Ammo {
-    TLB_craterType = "Land_ShellCrater_02_large_F";
-    TLB_craterRadius = 18;
+    TLB_craterSetting = "TLB_IEDs_craterLandBig";   // which CBA setting decides
+    TLB_craterDefault = 3;                          // what it defaults to
     class EventHandlers {
         init = "call TLB_IEDs_fnc_initMine";
     };
 };
 ```
+
+Note that the crater itself is **not** named here. Each ammo class only points at
+the setting that decides it, so crater choice stays configurable at runtime
+rather than baked into the PBO.
 
 That `init` handler fires wherever the mine is local. It is the same mechanism
 ACE uses for its trip flares, and putting it on the ammo means it works however
@@ -152,6 +157,28 @@ Under **TLB - IEDs** in the CBA settings menu. All server-forced.
 | Lift height | 1.0 m | Raise this if a vehicle still catches the crater's lip. |
 | Lift hold | 1.0 s | Stops a lifted vehicle dropping back before the crater exists. 0 for a single instant lift. |
 | Max craters | 0 | 0 = unlimited; craters are permanent. Raise above 0 only as a safety valve on very long operations, where it removes the oldest first. |
+
+### Crater selection
+
+Each of the eight IED types has its own `Crater: ...` setting, so a dug-in large
+IED and an urban one can leave completely different holes, and the pressure-plate
+variants can differ from the command-detonated ones. Options:
+
+| Option | Object |
+|---|---|
+| None | no crater for this IED type |
+| Small | `Land_ShellCrater_01_F` |
+| Medium | `Land_ShellCrater_02_small_F` |
+| Large | `Land_ShellCrater_02_large_F` |
+| Extra Large | `Land_ShellCrater_02_extralarge_F` |
+| Random | a different one of the four sizes on every detonation |
+
+Random is resolved **once**, on the machine the IED detonated on, and the chosen
+classname is then sent to everyone. If each machine rolled its own, the lift
+would size itself against a different crater than the one that actually appears.
+
+Adding another size is a one-line change to `TLB_IEDs_craterTypes` in
+`XEH_preInit.sqf` — it offers itself in all eight settings automatically.
 
 ## Diagnostics
 

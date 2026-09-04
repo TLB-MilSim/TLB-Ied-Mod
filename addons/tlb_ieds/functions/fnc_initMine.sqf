@@ -19,22 +19,33 @@ _mine addEventHandler ["Explode", {
     if !(TLB_IEDs_enableCraters) exitWith {};
 
     private _cfg = configOf _projectile;
-    private _craterType = getText (_cfg >> "TLB_craterType");
-    private _radius = getNumber (_cfg >> "TLB_craterRadius");
+    private _setting = getText (_cfg >> "TLB_craterSetting");
+    private _default = getNumber (_cfg >> "TLB_craterDefault");
 
     // configOf resolves to CfgAmmo at detonation; fall back through the mine's
     // ammo entry in case we are handed the CfgVehicles side instead.
-    if (_craterType isEqualTo "") then {
+    if (_setting isEqualTo "") then {
         private _ammoCfg = configFile >> "CfgAmmo" >> getText (_cfg >> "ammo");
-        _craterType = getText (_ammoCfg >> "TLB_craterType");
-        _radius = getNumber (_ammoCfg >> "TLB_craterRadius");
+        _setting = getText (_ammoCfg >> "TLB_craterSetting");
+        _default = getNumber (_ammoCfg >> "TLB_craterDefault");
     };
 
-    if (_craterType isEqualTo "") exitWith {};
-    if (_radius <= 0) then { _radius = 12 };
+    if (_setting isEqualTo "") exitWith {};
 
-    diag_log format ["[TLB_IEDs] detonation: %1 -> crater %2 r%3",
-        typeOf _projectile, _craterType, _radius];
+    // Which crater this IED type leaves is a CBA setting, not config.
+    private _idx = missionNamespace getVariable [_setting, _default];
+
+    // Resolve Random here, once, on this machine only. The chosen classname is
+    // then passed to both events - if each machine rolled its own, the lift
+    // would size itself against a different crater than the one that appears.
+    if (_idx isEqualTo TLB_IEDs_craterRandom) then {
+        _idx = 1 + floor random ((count TLB_IEDs_craterTypes) - 1);
+    };
+
+    private _craterType = TLB_IEDs_craterTypes param [_idx, ""];
+    if (_craterType isEqualTo "") exitWith {};   // "None", or a bad index
+
+    diag_log format ["[TLB_IEDs] detonation: %1 -> crater %2", typeOf _projectile, _craterType];
 
     // Order matters. Lift first, on every machine, so nothing is standing in the
     // crater's footprint when it appears. This is sent straight to the clients,
@@ -43,7 +54,7 @@ _mine addEventHandler ["Explode", {
     ["TLB_IEDs_blastLift", [_craterType, _posASL]] call CBA_fnc_globalEvent;
 
     // The server owns the crater so it exists once, globally.
-    ["TLB_IEDs_spawnCrater", [_craterType, _posASL, _radius]] call CBA_fnc_serverEvent;
+    ["TLB_IEDs_spawnCrater", [_craterType, _posASL]] call CBA_fnc_serverEvent;
 }];
 
 nil

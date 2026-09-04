@@ -9,7 +9,19 @@ TLB_IEDs_fnc_liftEntities    = compile preprocessFileLineNumbers "\tlb\ieds\func
 
 if (isNil "TLB_IEDs_craters") then { TLB_IEDs_craters = [] };
 
-// --- Settings -------------------------------------------------------------
+// Index -> crater classname. The crater settings below store an index into this,
+// so adding a size here is all it takes to offer it everywhere.
+// Index 5 ("Random") is resolved at detonation time, not stored.
+TLB_IEDs_craterTypes = [
+    "",                                 // 0 None
+    "Land_ShellCrater_01_F",            // 1 Small
+    "Land_ShellCrater_02_small_F",      // 2 Medium
+    "Land_ShellCrater_02_large_F",      // 3 Large
+    "Land_ShellCrater_02_extralarge_F"  // 4 Extra Large
+];
+TLB_IEDs_craterRandom = 5;
+
+// --- General settings -----------------------------------------------------
 [
     "TLB_IEDs_enableCraters", "CHECKBOX",
     ["Spawn craters", "Leave a persistent crater where a TLB IED detonates."],
@@ -45,9 +57,38 @@ if (isNil "TLB_IEDs_craters") then { TLB_IEDs_craters = [] };
     [0, 500, 0, 0], 1
 ] call CBA_settings_fnc_init;
 
+// --- Per-IED crater selection ---------------------------------------------
+// One LIST setting per IED type. The ammo classes only name which setting to
+// read (TLB_craterSetting) and what it defaults to, so nothing about crater
+// choice is baked into the config.
+private _values = [0, 1, 2, 3, 4, 5];
+private _labels = ["None", "Small", "Medium", "Large", "Extra Large", "Random"];
+
+{
+    _x params ["_setting", "_label", "_default"];
+
+    [
+        _setting, "LIST",
+        [
+            format ["Crater: %1", _label],
+            "Which crater this IED type leaves. Random picks a different size on every detonation. None disables the crater for this type only."
+        ],
+        "TLB - IEDs",
+        [_values, _labels, _default], 1
+    ] call CBA_settings_fnc_init;
+} forEach [
+    ["TLB_IEDs_craterLandBig",      "Large IED (Dug-in)",                    3],
+    ["TLB_IEDs_craterLandBigPP",    "Large IED (Dug-in, Pressure Plate)",    3],
+    ["TLB_IEDs_craterUrbanBig",     "Large IED (Urban)",                     3],
+    ["TLB_IEDs_craterUrbanBigPP",   "Large IED (Urban, Pressure Plate)",     3],
+    ["TLB_IEDs_craterLandSmall",    "Small IED (Dug-in)",                    2],
+    ["TLB_IEDs_craterLandSmallPP",  "Small IED (Dug-in, Pressure Plate)",    2],
+    ["TLB_IEDs_craterUrbanSmall",   "Small IED (Urban)",                     2],
+    ["TLB_IEDs_craterUrbanSmallPP", "Small IED (Urban, Pressure Plate)",     2]
+];
+
 // --- Events ---------------------------------------------------------------
-["TLB_IEDs_spawnCrater",   { _this call TLB_IEDs_fnc_spawnCrater }]     call CBA_fnc_addEventHandler;
-["TLB_IEDs_blastLift",     { _this call TLB_IEDs_fnc_liftEntities }]    call CBA_fnc_addEventHandler;
+["TLB_IEDs_spawnCrater",   { _this call TLB_IEDs_fnc_spawnCrater }]  call CBA_fnc_addEventHandler;
+["TLB_IEDs_blastLift",     { _this call TLB_IEDs_fnc_liftEntities }] call CBA_fnc_addEventHandler;
 
 diag_log "[TLB_IEDs] preInit complete";
-

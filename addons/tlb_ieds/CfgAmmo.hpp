@@ -1,16 +1,21 @@
 // The crater hook lives on the AMMO, not the mine object, so it fires no matter
-// how the IED got into the world: Eden, Zeus module, createMine, or ACE placement.
+// how the IED got into the world: Eden, Zeus module, createMine, or ACE
+// placement.
 //
-// TLB_craterType   - object spawned at the detonation point
-// TLB_craterRadius - search radius for vehicles/infantry that need collision
-//                    suppression so they are not trapped by the new crater mesh
+// The crater itself is NOT chosen here. Each ammo class only names the CBA
+// setting that decides it, plus the index that setting defaults to, so the
+// crater for every IED type stays configurable at runtime:
+//
+//   0 None   1 Small   2 Medium   3 Large   4 Extra Large   5 Random
+//
+// Index -> classname lives in TLB_IEDs_craterTypes (XEH_preInit.sqf).
 
-#define TLB_CRATER_LARGE "Land_ShellCrater_02_large_F"
-#define TLB_CRATER_SMALL "Land_ShellCrater_02_small_F"
+#define TLB_CRATER_MEDIUM 2
+#define TLB_CRATER_LARGE  3
 
-#define TLB_IED_CRATER(CRATER,RADIUS) \
-    TLB_craterType = CRATER; \
-    TLB_craterRadius = RADIUS; \
+#define TLB_IED_CRATER(SETTING,DEFAULT) \
+    TLB_craterSetting = SETTING; \
+    TLB_craterDefault = DEFAULT; \
     class EventHandlers { \
         init = "call TLB_IEDs_fnc_initMine"; \
     }
@@ -33,29 +38,29 @@ class CfgAmmo {
 
     // --- TLB large --------------------------------------------------------
     class TLB_IEDLandBig_Remote_Ammo: IEDLandBig_Remote_Ammo {
-        TLB_IED_CRATER(TLB_CRATER_LARGE,18);
+        TLB_IED_CRATER("TLB_IEDs_craterLandBig",TLB_CRATER_LARGE);
     };
     class TLB_IEDLandBig_Range_Ammo: ACE_IEDLandBig_Range_Ammo {
-        TLB_IED_CRATER(TLB_CRATER_LARGE,18);
+        TLB_IED_CRATER("TLB_IEDs_craterLandBigPP",TLB_CRATER_LARGE);
     };
     class TLB_IEDUrbanBig_Remote_Ammo: IEDUrbanBig_Remote_Ammo {
-        TLB_IED_CRATER(TLB_CRATER_LARGE,18);
+        TLB_IED_CRATER("TLB_IEDs_craterUrbanBig",TLB_CRATER_LARGE);
     };
     class TLB_IEDUrbanBig_Range_Ammo: ACE_IEDUrbanBig_Range_Ammo {
-        TLB_IED_CRATER(TLB_CRATER_LARGE,18);
+        TLB_IED_CRATER("TLB_IEDs_craterUrbanBigPP",TLB_CRATER_LARGE);
     };
 
     // --- TLB small --------------------------------------------------------
     class TLB_IEDLandSmall_Remote_Ammo: IEDLandSmall_Remote_Ammo {
-        TLB_IED_CRATER(TLB_CRATER_SMALL,10);
+        TLB_IED_CRATER("TLB_IEDs_craterLandSmall",TLB_CRATER_MEDIUM);
     };
     class TLB_IEDLandSmall_Range_Ammo: ACE_IEDLandSmall_Range_Ammo {
-        TLB_IED_CRATER(TLB_CRATER_SMALL,10);
+        TLB_IED_CRATER("TLB_IEDs_craterLandSmallPP",TLB_CRATER_MEDIUM);
     };
     class TLB_IEDUrbanSmall_Remote_Ammo: IEDUrbanSmall_Remote_Ammo {
-        TLB_IED_CRATER(TLB_CRATER_SMALL,10);
+        TLB_IED_CRATER("TLB_IEDs_craterUrbanSmall",TLB_CRATER_MEDIUM);
     };
     class TLB_IEDUrbanSmall_Range_Ammo: ACE_IEDUrbanSmall_Range_Ammo {
-        TLB_IED_CRATER(TLB_CRATER_SMALL,10);
+        TLB_IED_CRATER("TLB_IEDs_craterUrbanSmallPP",TLB_CRATER_MEDIUM);
     };
 };
