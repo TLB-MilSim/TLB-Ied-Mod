@@ -5,7 +5,7 @@
 # TLB - IEDs
 
 An Arma 3 addon that adds TLB-branded copies of the eight vanilla and ACE IED
-types. Each one leaves a **persistent crater** where it detonates — without
+types. Each one leaves a **persistent crater** where it detonates, without
 launching or trapping the vehicle that set it off.
 
 Requires **CBA_A3** and **ACE3** (`ace_explosives`). Built and tested against
@@ -21,9 +21,10 @@ ACE 3.21.2, Arma 3 v2.10+.
 ## What it does
 
 Standard ACE IEDs detonate and leave nothing behind. These behave identically in
-every other respect — defusing, pressure plates, cellphone, clacker and dead man
-switch are all inherited unchanged — but they scar the ground permanently, so a
-route that has been hit *looks* like it has been hit for the rest of the mission.
+every other respect. Defusing, pressure plates, cellphone, clacker and dead man
+switch are all inherited unchanged. What is new is that they scar the ground
+permanently, so a route that has been hit *looks* like it has been hit for the
+rest of the mission.
 
 The hard part isn't spawning the crater. It's spawning a solid 3D object inside
 the hull of the vehicle that just drove over it, without the physics engine
@@ -39,7 +40,7 @@ firing that vehicle into the sky. See [The anti-stuck problem](#3-the-anti-stuck
   <tr>
     <td width="50%">
       <img src="docs/screenshots/02-mrap-drove-out.jpg" alt="The same MRAP clear of the crater, still driveable">
-      <br><em>Lands on the crater, not inside it — and drives out.</em>
+      <br><em>Lands on the crater, not inside it, and drives out.</em>
     </td>
     <td width="50%">
       <img src="docs/screenshots/03-crater-front.jpg" alt="A crater left on open ground">
@@ -53,16 +54,16 @@ firing that vehicle into the sky. See [The anti-stuck problem](#3-the-anti-stuck
     </td>
     <td width="50%">
       <img src="docs/screenshots/05-crater-open-ground.jpg" alt="A smaller crater on open ground">
-      <br><em>Crater size is a per-IED setting — see <a href="#crater-selection">Crater selection</a>.</em>
+      <br><em>Crater size is a per-IED setting. See <a href="#crater-selection">Crater selection</a>.</em>
     </td>
   </tr>
 </table>
 
 ## Installation
 
-**Clients** — load `@TLB - IEDs` alongside CBA and ACE.
+**Clients.** Load `@TLB - IEDs` alongside CBA and ACE.
 
-**Server** — copy `@TLB - IEDs` to the server, add it to `-mod=`, and install
+**Server.** Copy `@TLB - IEDs` to the server, add it to `-mod=`, and install
 `keys/TLBIEDs01.bikey` into the server's `keys/` folder so the signature
 verifies.
 
@@ -79,7 +80,7 @@ verifies.
 | TLB IED (Small, Urban) | `TLB_IEDUrbanSmall` | `TLB_ModuleExplosive_IEDUrbanSmall` | Medium |
 | TLB IED (Small, Urban, Pressure Plate) | `TLB_IEDUrbanSmall_Range` | `TLB_ModuleExplosive_IEDUrbanSmall_Range` | Medium |
 
-Those are only the **defaults** — every IED type has its own CBA setting, so you
+Those are only the **defaults**. Every IED type has its own CBA setting, so you
 can give each one any crater size, turn its crater off, or set it to Random. See
 [Crater selection](#crater-selection).
 
@@ -88,7 +89,7 @@ through the modules in the right-hand column.
 
 Only the display name, the ammo class and the crater differ from the originals.
 Craters are **not** added to the stock vanilla/ACE IEDs, so existing missions
-behave exactly as they always have — mission makers opt in by placing the TLB
+behave exactly as they always have. Mission makers opt in by placing the TLB
 versions.
 
 ---
@@ -115,8 +116,8 @@ rather than baked into the PBO.
 
 That `init` handler fires wherever the mine is local. It is the same mechanism
 ACE uses for its trip flares, and putting it on the ammo means it works however
-the IED reached the world — Eden, a Zeus module, `createMine`, or an ACE player
-placement.
+the IED reached the world, whether Eden, a Zeus module, `createMine`, or an ACE
+player placement.
 
 `fnc_initMine.sqf` then attaches an `Explode` handler to the mine:
 
@@ -128,7 +129,7 @@ _mine addEventHandler ["Explode", {
 ```
 
 `Explode` fires **only on a genuine detonation**. Defusing deletes the mine
-without firing it, so EOD work never leaves a phantom crater — no extra
+without firing it, so EOD work never leaves a phantom crater. No extra
 bookkeeping is needed to tell the two apart.
 
 ### 2. Building the crater
@@ -161,7 +162,7 @@ to build the crater:
 
 The crater has to round-trip through the server before it can exist anywhere, so
 the lift is always ahead of the thing it protects against, however slow the link
-is. A one-second hold then stops the vehicle falling back down in that gap — it
+is. A one-second hold then stops the vehicle falling back down in that gap. It
 holds height above *ground*, so it keeps working while the vehicle is still
 moving.
 
@@ -179,8 +180,8 @@ The lift radius is read from the crater model itself via `sizeOf` rather than
 hardcoded, so only things genuinely in the hole get moved, and it stays correct
 if the crater types are ever changed.
 
-Each machine only moves what is **local** to it — `setPos` on a remote object
-desyncs.
+Each machine only moves what is **local** to it, because `setPos` on a remote
+object desyncs.
 
 ---
 
@@ -216,7 +217,7 @@ classname is then sent to everyone. If each machine rolled its own, the lift
 would size itself against a different crater than the one that actually appears.
 
 Adding another size is a one-line change to `TLB_IEDs_craterTypes` in
-`XEH_preInit.sqf` — it offers itself in all eight settings automatically.
+`XEH_preInit.sqf`, and it offers itself in all eight settings automatically.
 
 ## Diagnostics
 
@@ -233,9 +234,9 @@ Those map to the four stages, which makes a failure easy to localise:
 
 | Last line seen | Meaning |
 |---|---|
-| *nothing* | The PBO prefix is wrong — look for `Script \tlb\ieds\XEH_preInit.sqf not found`. |
+| *nothing* | The PBO prefix is wrong. Look for `Script \tlb\ieds\XEH_preInit.sqf not found`. |
 | `preInit complete` | Functions loaded, but the ammo `init` handler never fired. |
-| `armed` | The mine was hooked, but `Explode` never fired — it was defused, not detonated. Or this IED type's crater setting is **None**. |
+| `armed` | The mine was hooked, but `Explode` never fired, so it was defused rather than detonated. Or this IED type's crater setting is **None**. |
 | `lifted` | Crater creation failed; check the classname in `TLB_IEDs_craterTypes` (`XEH_preInit.sqf`). |
 
 ## Building from source
@@ -258,7 +259,7 @@ Two things the build script does that are worth keeping:
 - **It passes `-prefix=tlb\ieds` explicitly.** AddonBuilder ignores `$PBOPREFIX$`
   and silently names the prefix after the source folder instead.
 - **It reads the prefix back out of the finished PBO and fails the build if it is
-  wrong.** A bad prefix produces no build error at all — it surfaces only in game
+  wrong.** A bad prefix produces no build error at all. It surfaces only in game
   as a missing script, which is a miserable way to find out.
 
 Packing uses `-packonly`. There are no models or textures here, only config and
@@ -286,10 +287,10 @@ mod.cpp                   launcher metadata
 2. In Eden, place a player in a vehicle and a **TLB IED (Large, Dug-in, Pressure
    Plate)** on a road.
 3. Drive over it. The IED detonates, a large crater appears at the exact spot,
-   and the vehicle is **not** launched — it lands on the crater and, if still
+   and the vehicle is **not** launched. It lands on the crater and, if still
    driveable, pulls out normally.
 4. Confirm the crew are still *in* the vehicle.
-5. Defuse a second IED instead of triggering it — no crater should appear.
+5. Defuse a second IED instead of triggering it, and no crater should appear.
 6. Repeat on a dedicated server with two clients, to confirm the crater appears
    for both and that the lift applies on whichever machine owns the vehicle.
 
