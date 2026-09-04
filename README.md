@@ -307,9 +307,38 @@ If you have one, or you hit a problem, come and tell us:
 Bug reports and feature requests are equally welcome on the
 [issue tracker](https://github.com/TLB-MilSim/TLB-Ied-Mod/issues).
 
+## Contributing
+
+Pull requests are welcome, and so are bug reports and ideas on the
+[issue tracker](https://github.com/TLB-MilSim/TLB-Ied-Mod/issues) or in
+[Discord](https://discord.gg/TLBMilSim).
+
+By opening a pull request you agree that your contribution is licensed to TLB
+MilSim under the same terms as the rest of the project.
+
+## License
+
+[Arma Public Licence No Derivatives (APL-ND)](LICENSE).
+
+In plain terms, and the [LICENSE](LICENSE) file is what actually governs:
+
+- **Use it freely.** Put it on your server, use it in your missions.
+- **Share it unmodified.** Passing the mod along as-is is fine.
+- **Do not sell it**, and do not use it outside Arma.
+- **Do not distribute a modified or repackaged version.** That includes bundling
+  it inside another mod, or reskinning it under different branding.
+
+The **TLB** and **TLB MilSim** names and the logo are not covered by the licence
+and remain ours.
+
+If you want to do something the licence does not allow, ask us in
+[Discord](https://discord.gg/TLBMilSim). We are much more likely to say yes than
+you might expect.
+
 ## Credits
 
 Built for **TLB MilSim**.
 
-Detonation hook pattern adapted from [ACE3](https://github.com/acemod/ACE3)
-(`ace_explosives`), which is GPLv2.
+Thanks to [ACE3](https://github.com/acemod/ACE3), whose `ace_explosives` source
+is where we learned that a mine's ammo class can carry an `init` handler and
+that mines respond to the `Explode` event. No ACE code is used or included here.
